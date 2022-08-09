@@ -1,0 +1,9 @@
+me\Leruk\events\MemberLeaveEvent.class
+me\Leruk\commands\ClearCommand.class
+me\Leruk\commands\BanCommand.class
+me\Leruk\commands\ClearCommand$1.class
+me\Leruk\commands\ClearCommand$ErrorCodes.class
+me\Leruk\commands\HelpCommand.class
+me\Leruk\DiscordBot.class
+me\Leruk\events\MemberJoinEvent.class
+me\Leruk\commands\KickCommand.class
