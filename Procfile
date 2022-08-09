@@ -1,1 +1,1 @@
-Worker: java src/main/java/me/Leruk/DiscordBot.java
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* me.Leruk.DiscordBot
