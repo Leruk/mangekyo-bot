@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* me.Leruk.DiscordBot
+web: java -jar -cp me.Leruk.DiscordBot
