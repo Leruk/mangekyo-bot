@@ -1,7 +1,11 @@
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\commands\BanCommand.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\commands\ClearCommand.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\commands\KickCommand.java
+D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\commands\music\JoinCommand.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\events\MemberLeaveEvent.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\commands\HelpCommand.java
+D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\lavaplayer\TrackScheduler.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\events\MemberJoinEvent.java
 D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\DiscordBot.java
+D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\lavaplayer\AudioPlayerSendHandler.java
+D:\Projects\Java\DiscordBots\Nationalist\src\main\java\me\Leruk\errors\ErrorCodes.java

@@ -6,10 +6,12 @@ import me.Leruk.commands.HelpCommand;
 import me.Leruk.commands.KickCommand;
 import me.Leruk.events.MemberJoinEvent;
 import me.Leruk.events.MemberLeaveEvent;
+import me.Leruk.commands.music.JoinCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 
@@ -20,8 +22,12 @@ public class DiscordBot{
     public static void main(String[] args) throws LoginException
     {
         JDA jda = JDABuilder.createDefault("MTAwNTg4MDg4NzM0MDE4NzczOA.GUC6NU.x_C8017XQK4QXOkqBnSEp7JGQKSz0FqMCaOf3Y")
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_VOICE_STATES
+                )
+                .enableCache(CacheFlag.VOICE_STATE)
                 .setActivity(Activity.playing("c Леруком | " + prefix + "help"))
                 .build();
 
@@ -29,6 +35,7 @@ public class DiscordBot{
         jda.addEventListener(new BanCommand());
         jda.addEventListener(new HelpCommand());
         jda.addEventListener(new ClearCommand());
+        jda.addEventListener(new JoinCommand());
 
         jda.addEventListener(new MemberJoinEvent());
         jda.addEventListener(new MemberLeaveEvent());
