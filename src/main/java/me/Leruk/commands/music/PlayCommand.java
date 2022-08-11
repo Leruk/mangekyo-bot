@@ -1,89 +1,107 @@
 package me.Leruk.commands.music;
 
 import me.Leruk.DiscordBot;
-import me.Leruk.errors.ErrorCodes;
+import me.Leruk.errors.ErrorChecks;
+import me.Leruk.lavaplayer.PlayerManager;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.AudioChannel;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("ConstantConditions")
 public class PlayCommand extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent e) {
         final String[] args = e.getMessage().getContentRaw().split(" ");
-        final MessageChannel channel = e.getChannel();
+        final TextChannel tChannel = e.getChannel().asTextChannel();
 
-        if (args[0].equalsIgnoreCase(DiscordBot.getPrefix() + "play"))
-        {
-            if (args.length != 2) {
-                channel.sendMessage(" ").setEmbeds(invalidCommand(ErrorCodes.AMOUNT_ARGUMENTS).build()).queue();
+        final EmbedBuilder error = new EmbedBuilder();
+
+        if (args[0].equalsIgnoreCase(DiscordBot.getPrefix() + "play")) {
+
+            if(!ErrorChecks.isMusicChanel(tChannel))
+            {
+                e.getMessage().delete().queue();
+
+                error.setTitle("Музыка работает только в `#музыка`");
+                error.setColor(Color.RED);
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue((warning) -> warning.delete().queueAfter(10, TimeUnit.SECONDS));
                 return;
             }
 
-            final Member member = e.getMember();
-            final GuildVoiceState memberVoiceState = member.getVoiceState();
+            if (args.length == 1) {
+                error.setDescription('`' + DiscordBot.getPrefix() + "play` - команда для проигрывания трека");
 
-            if (!member.getVoiceState().inAudioChannel()) {
-                channel.sendMessage(" ").setEmbeds(invalidCommand(ErrorCodes.MEMBER_MISS_VOICE).build()).queue();
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
-            final Member bot = e.getGuild().getSelfMember();
-            final GuildVoiceState botVoiceState = bot.getVoiceState();
+            final GuildVoiceState botVoiceState = e.getGuild().getSelfMember().getVoiceState();
+            final GuildVoiceState memberVoiceState = e.getMember().getVoiceState();
 
-            if (botVoiceState.inAudioChannel() && memberVoiceState.getChannel() != botVoiceState.getChannel()) {
-                channel.sendMessage(" ").setEmbeds(invalidCommand(ErrorCodes.BOT_VOICE_ACTIVE).build()).queue();
+            if(!ErrorChecks.isMemberPresent(memberVoiceState))
+            {
+                error.setDescription("Для обращения к боту, надо находится в голосовом канале");
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
+
+            if(ErrorChecks.isBotPresent(botVoiceState))
+            {
+                if (!ErrorChecks.isSameChannelAsBot(botVoiceState, memberVoiceState))
+                {
+                    error.setDescription("Бот находится в другом голосовом канале");
+
+                    tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
+                    return;
+                }
+            }
+
+            String link = getLink(args);
 
             final AudioManager audioManager = e.getGuild().getAudioManager();
-            final AudioChannel audioChannel = memberVoiceState.getChannel();
+            final AudioChannel memberChannel = memberVoiceState.getChannel();
 
-            audioManager.openAudioConnection(audioChannel);
-            channel.sendMessage(" ").setEmbeds(correctCommand(memberVoiceState.getChannel().getName()).build()).queue();
+            PlayerManager.getInstance().loadAndPlay(tChannel, link, audioManager, memberChannel);
         }
-
 
     }
 
-    private static EmbedBuilder invalidCommand(ErrorCodes errorCode) {
-        EmbedBuilder error = new EmbedBuilder();
-
-        error.setColor(Color.RED);
-
-        switch (errorCode) {
-            case AMOUNT_ARGUMENTS:
-                error.setTitle("\uD83D\uDD34 Неверное кол-во аргументов");
-                error.setDescription("Для проигрования музыки используйте:  \n" + DiscordBot.getPrefix() + "play url");
-                break;
-
-            case MEMBER_MISS_VOICE:
-                error.setTitle("\uD83D\uDD34 Ошибка подключения");
-                error.setDescription("Для вызова бота, надо находится в голосовом канале");
-                break;
-            case BOT_VOICE_ACTIVE:
-                error.setTitle("\uD83D\uDD34 Ошибка подключения");
-                error.setDescription("Бот уже занят другим участником сервера");
-                break;
-
-            default:
-                error.setTitle("\uD83D\uDD34 Неизвестная команда");
-                error.setDescription("Для проигрования музыки используйте:  \n" + DiscordBot.getPrefix() + "play url");
+    private String getLink(String[] args)
+    {
+        StringBuilder linkBuilder = new StringBuilder();
+        for(int i = 1; i < args.length; i++)
+        {
+            linkBuilder.append(args[i]);
         }
-        return error;
+        linkBuilder.trimToSize();
+
+        String link = linkBuilder.toString();
+        if (!isUrl(link)) {
+            link = "ytsearch:" + link;
+        }
+
+        return link;
     }
 
-    private static EmbedBuilder correctCommand(String channelName) {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("\uD83D\uDD0A Подключился к  " + channelName);
-        eb.setColor(Color.GREEN);
-
-        return eb;
+    private boolean isUrl(String url)
+    {
+        try
+        {
+            new URL(url);
+            return true;
+        }
+        catch (MalformedURLException e)
+        {
+            return false;
+        }
     }
 }

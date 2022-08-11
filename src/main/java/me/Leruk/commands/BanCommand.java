@@ -4,6 +4,7 @@ import me.Leruk.DiscordBot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -13,16 +14,20 @@ public class BanCommand extends ListenerAdapter
 {
     public void onMessageReceived(MessageReceivedEvent e)
     {
-        int banDays = 0;
+        final String[] args = e.getMessage().getContentRaw().split(" ");
+        final TextChannel tChannel = e.getChannel().asTextChannel();
 
-        Member member = e.getMember();
-        String[] args = e.getMessage().getContentRaw().split(" ");
+        int banDays = 0;
+        EmbedBuilder error = new EmbedBuilder();
 
         if(args[0].equalsIgnoreCase(DiscordBot.getPrefix() + "ban"))
         {
-            if(e.getMessage().getMentions().getUsers().isEmpty() || args.length != 3)
+            if(e.getMessage().getMentions().getUsers().isEmpty())
             {
-                e.getChannel().sendMessage(" ").setEmbeds(invalidCommand().build()).queue();
+                error.setDescription("Для бана участника его надо упомянуть, и написать срок используя команду: \n`"
+                        +  DiscordBot.getPrefix() + "ban [@имя_пользователя] [кол-во дней]`");
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
@@ -32,28 +37,40 @@ public class BanCommand extends ListenerAdapter
             }
             catch (Exception exception)
             {
-                e.getChannel().sendMessage(" ").setEmbeds(invalidCommand().build()).queue();
+                error.setDescription("Для бана участника его надо упомянуть, и написать срок используя команду: \n`"
+                        +  DiscordBot.getPrefix() + "ban [@имя_пользователя] [кол-во дней]`");
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
-            Member banUser = e.getMessage().getMentions().getMembers().get(0);
+            final Member member = e.getMember();
+            final Member banUser = e.getMessage().getMentions().getMembers().get(0);
+            final Member selfMember = e.getGuild().getSelfMember();
 
             if(!member.hasPermission(Permission.BAN_MEMBERS))
             {
-                e.getChannel().sendMessage("У вас нет прав банить участников этой группы").queue();
+                error.setDescription("У вас нет прав банить участников этой группы");
+                error.setColor(Color.RED);
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
-            final Member selfMember = e.getGuild().getSelfMember();
-
             if (!selfMember.hasPermission(Permission.BAN_MEMBERS)) {
-                e.getChannel().sendMessage("У меня нет прав банить участников этой группы").queue();
+                error.setDescription("У меня нет прав банить участников этой группы");
+                error.setColor(Color.RED);
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
             if (!selfMember.canInteract(banUser) || !member.canInteract(banUser))
             {
-                e.getChannel().sendMessage("Участник, которого вы хотите забанить является администратором").queue();
+                error.setDescription("Участник, которого вы хотите забанить является администратором");
+                error.setColor(Color.RED);
+
+                tChannel.sendMessage(" ").setEmbeds(error.build()).queue();
                 return;
             }
 
@@ -63,20 +80,10 @@ public class BanCommand extends ListenerAdapter
                     .reason("⠀")
                     .queue(
                             (__) -> e.getChannel().sendMessage("Участник " + banUser.getUser().getName() + " был забанен").queue(),
-                            (error) -> e.getChannel().sendMessageFormat("При бане участника произошла ошибка: %s", error.getMessage()).queue()
+                            (trouble) -> e.getChannel().sendMessageFormat("При бане участника произошла ошибка: %s", trouble.getMessage()).queue()
                     );
         }
 
-    }
-
-    private static EmbedBuilder invalidCommand()
-    {
-        EmbedBuilder eb = new EmbedBuilder();
-        eb.setTitle("Неправильно введенная команда");
-        eb.setDescription("Для бана участника надо использовать команду \n" + DiscordBot.getPrefix() + "ban [@имя_пользователя] [кол-во дней]");
-        eb.setColor(Color.RED);
-
-        return eb;
     }
 
 }

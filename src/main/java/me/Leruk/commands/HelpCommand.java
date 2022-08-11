@@ -9,6 +9,10 @@ import java.awt.*;
 
 public class HelpCommand extends ListenerAdapter
 {
+    private static final String CONTROL = "\uD83D\uDEE0";
+    private static final String RESTRICT = "\uD83D\uDEAB";
+    private static final String MUSIC = "\uD83C\uDFB5";
+
     public void onMessageReceived(MessageReceivedEvent e)
     {
         String command = e.getMessage().getContentRaw();
@@ -24,8 +28,9 @@ public class HelpCommand extends ListenerAdapter
 
         eb.setTitle("Команды");
         eb.setDescription("Для получения дополнительной информации: " + DiscordBot.getPrefix() + "help [...]");
-        eb.addField("\uD83D\uDEE0️Команды каналов\uD83D\uDEE0️", "clear [кол-во сообщений]", false);
-        eb.addField("\uD83D\uDEABКоманды ограничения\uD83D\uDEAB", "kick [@участник], ban [@участник] [кол-во дней]", false);
+        eb.addField(CONTROL + " Команды каналов " + CONTROL, "`clear [кол-во сообщений]`", false);
+        eb.addField(RESTRICT + " Команды ограничения " + RESTRICT, "`kick [@участник]`, `ban [@участник] [кол-во дней]`", false);
+        eb.addField(MUSIC + " Команды музыки " + MUSIC, "`join`, `play [<url> или название]`, `nowplaying`\n `pause`, `resume`, `stop`, `skip`, `repeat`, `leave`", false);
         eb.setColor(new Color(160, 50, 255));
 
         return eb;

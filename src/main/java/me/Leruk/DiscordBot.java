@@ -4,9 +4,9 @@ import me.Leruk.commands.BanCommand;
 import me.Leruk.commands.ClearCommand;
 import me.Leruk.commands.HelpCommand;
 import me.Leruk.commands.KickCommand;
+import me.Leruk.commands.music.*;
 import me.Leruk.events.MemberJoinEvent;
 import me.Leruk.events.MemberLeaveEvent;
-import me.Leruk.commands.music.JoinCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,7 +35,16 @@ public class DiscordBot{
         jda.addEventListener(new BanCommand());
         jda.addEventListener(new HelpCommand());
         jda.addEventListener(new ClearCommand());
+
         jda.addEventListener(new JoinCommand());
+        jda.addEventListener(new PlayCommand());
+        jda.addEventListener(new StopCommand());
+        jda.addEventListener(new SkipCommand());
+        jda.addEventListener(new PauseCommand());
+        jda.addEventListener(new NowPlaying());
+        jda.addEventListener(new RepeatCommand());
+        jda.addEventListener(new LeaveCommand());
+        jda.addEventListener(new ResumeCommand());
 
         jda.addEventListener(new MemberJoinEvent());
         jda.addEventListener(new MemberLeaveEvent());
