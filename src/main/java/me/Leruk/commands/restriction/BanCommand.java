@@ -1,4 +1,4 @@
-package me.Leruk.commands;
+package me.Leruk.commands.restriction;
 
 import me.Leruk.DiscordBot;
 import net.dv8tion.jda.api.EmbedBuilder;

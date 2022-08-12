@@ -1,4 +1,4 @@
-package me.Leruk.commands;
+package me.Leruk.commands.restriction;
 
 import me.Leruk.DiscordBot;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.*;
 
+@SuppressWarnings("ConstantConditions")
 public class KickCommand extends ListenerAdapter
 {
     public void onMessageReceived(MessageReceivedEvent e)

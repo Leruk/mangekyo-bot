@@ -1,9 +1,9 @@
 package me.Leruk;
 
-import me.Leruk.commands.BanCommand;
+import me.Leruk.commands.restriction.BanCommand;
 import me.Leruk.commands.ClearCommand;
 import me.Leruk.commands.HelpCommand;
-import me.Leruk.commands.KickCommand;
+import me.Leruk.commands.restriction.KickCommand;
 import me.Leruk.commands.music.*;
 import me.Leruk.events.MemberJoinEvent;
 import me.Leruk.events.MemberLeaveEvent;
@@ -33,6 +33,7 @@ public class DiscordBot{
 
         jda.addEventListener(new KickCommand());
         jda.addEventListener(new BanCommand());
+
         jda.addEventListener(new HelpCommand());
         jda.addEventListener(new ClearCommand());
 
