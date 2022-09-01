@@ -17,18 +17,18 @@ import javax.security.auth.login.LoginException;
 
 public class DiscordBot{
 
-    private static String prefix = "$";
+    private static String prefix = "!";
 
     public static void main(String[] args) throws LoginException
     {
-        JDA jda = JDABuilder.createDefault("MTAwNTg4MDg4NzM0MDE4NzczOA.GUC6NU.x_C8017XQK4QXOkqBnSEp7JGQKSz0FqMCaOf3Y")
+        JDA jda = JDABuilder.createDefault("MTAwNzYyMTA4MzA1MjEyMjIwNA.G5u0lh.O7PNwYsgWjme1yV9bsh0pDlzoXMuAnzzxE5W1w")
                 .enableIntents(
                         GatewayIntent.MESSAGE_CONTENT,
                         GatewayIntent.GUILD_MEMBERS,
                         GatewayIntent.GUILD_VOICE_STATES
                 )
                 .enableCache(CacheFlag.VOICE_STATE)
-                .setActivity(Activity.playing("c Леруком | " + prefix + "help"))
+                .setActivity(Activity.playing("Музончик | " + prefix + "help"))
                 .build();
 
         jda.addEventListener(new KickCommand());
