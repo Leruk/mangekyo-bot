@@ -84,7 +84,7 @@ public class PlayerManager {
 
                     final int trackCount = Math.min(tracks.size(), 5);
                     final MessageAction messageAction = tChannel.sendMessage(
-                            String.format("Выберите трек используя " + DiscordBot.getPrefix() + `play 1-%d`:\n", trackCount));
+                            String.format("Выберите трек используя " + `!play 1-%d`:\n", trackCount));
 
                     for (int i = 0; i < trackCount; i++) {
                         final AudioTrack track = tracks.get(i);
